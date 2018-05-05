@@ -14,35 +14,29 @@ stop_words = set(stopwords.words('english'))
 detokenizer = MosesDetokenizer()
 lemmatizer = WordNetLemmatizer()
 filelabelTest = "Label/TestingLabel.txt"
-filelabelTrain = "Label/TrainingLabel.txt"
 labelTest = pnd.read_csv(filelabelTest, delim_whitespace=True)
-labelTrain = pnd.read_csv(filelabelTrain, delim_whitespace=True)
 #Diubah ke matriks
 labelTest = np.matrix(labelTest)
-labelTrain = np.matrix(labelTrain)
-# print(labelTrain)
 # print(labelTest)
-datasetTrain = []
+datasetTest = []
 label = []
 output = []
-fileName = './PrePrecessingTraining.csv'
+fileName = './PrePrecessingTesting.csv'
 
-for i in range(len(labelTrain)):
-	soup = bs(open("Training/"+ str(labelTrain[i,0])+".xml",'r').read(),'html.parser')
+for i in range(len(labelTest)):
+	soup = bs(open("Testing/"+ str(labelTest[i,0])+".xml",'r').read(),'html.parser')
 
 	headline = soup.find("headline").get_text().replace('\n','')
 	paragraph = soup.find("text").get_text().replace('\n','')
-	label = int((labelTrain[i,1]) == "YES")
-	datasetTrain.append([[str(headline)],[str(paragraph)],label])
+	label = int((labelTest[i,1]) == "YES")
+	datasetTest.append([[str(headline)],[str(paragraph)],label])
 # ==================================================
 # Case Folding
 tmp0 = []
 tmp1 = []
-for i in range(len(datasetTrain)):
-	# print(datasetTrain[i][0])
-	# print(datasetTrain[i][1])
-	tmp0.append(datasetTrain[i][0])
-	tmp1.append(datasetTrain[i][1])
+for i in range(len(datasetTest)):
+	tmp0.append(datasetTest[i][0])
+	tmp1.append(datasetTest[i][1])
 # print(tmp0)
 # print(tmp1)
 for i in range(len(tmp0)):
@@ -124,7 +118,7 @@ for word in stopWordRemov1:
 
 # Memberi Label
 for i in range(len(hasilStem0)):
-	output.append([hasilStem0[i],hasilStem1[i],datasetTrain[i][2]])
+	output.append([hasilStem0[i],hasilStem1[i],datasetTest[i][2]])
 
 # print(output)
 
@@ -137,26 +131,3 @@ with open(fileName, "w") as resultFile:
 	for line in output:
 		wr.writerow(line)
 print('finish')
-
-
-
-
-
-
-
-# #Detokenizer
-# result0 = []
-# result1 =[]
-# for k in range(len(hasilStem0)):
-#     result0.append(detokenizer.detokenize(hasilStem0[k], return_str=True))
-# for k in range(len(hasilStem1)):
-#     result1.append(detokenizer.detokenize(hasilStem1[k], return_str=True))
-
-# print(result0)
-# for l in range(len(result0)):
-# 	result0[l] = result0[l].replace(" ","")
-# 	print(result0[l])
-# for l in range(len(result1)):
-# 	result1[l] = result1[l].replace(" ","")
-# 	print(result1[l])
-# ==================================================
