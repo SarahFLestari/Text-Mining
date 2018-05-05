@@ -2,6 +2,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.svm import SVC
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
 
 #TrainingSet = "./PreProcessingTraining.csv"
 #TestingSet = "./PreProcessingTesting.csv"
@@ -56,7 +57,7 @@ for i in range(len(labelTrain)):
 a=len(labelTrain)
 b=akurasi
 c=((float(b*100)/a)+1)
-print("Akurasi : {} %".format(int(round(c))) )
+print("Akurasi Naive Bayes Data Train: {} %".format(int(round(c))) )
 
 # Akurasi Data Test
 
@@ -74,7 +75,7 @@ x=len(labelTest)
 y=akurasi1
 z=((float(y*100)/x)+1)
 
-print("Akurasi : {} %".format(int(round(z))) )
+print("Akurasi Naive Bayes Data Test: {} %".format(int(round(z))) )
 
 # ==================================================
 # SVM Classifier
@@ -83,8 +84,9 @@ print("Akurasi : {} %".format(int(round(z))) )
 MTrain2 = count_vect.fit_transform(datasetTrain)
 TFIDFTrain2 = Pembobotan.fit_transform(MTrain2)
 
-klasifikasi2 = MultinomialNB().fit(TFIDFTrain2, labelTrain)
-prediksi2 = klasifikasi.predict(TFIDFTrain2)
+klasifikasi2 = SVC().fit(TFIDFTrain2, labelTrain)
+prediksi2 = klasifikasi2.predict(TFIDFTrain2)
+# print(prediksi2)
 akurasi2 = 0
 for i in range(len(labelTrain)):
 	if labelTrain[i] == str(prediksi2[i]):
@@ -93,15 +95,16 @@ for i in range(len(labelTrain)):
 u=len(labelTrain)
 v=akurasi2
 w=((float(v*100)/u)+1)
-print("Akurasi : {} %".format(int(round(w))) )
+print("Akurasi SVM Data Train: {} %".format(int(round(w))) )
 
 # Akurasi Data Test
 
 MTest3 = count_vect.fit_transform(datasetTest)
 TFIDFTest3 = Pembobotan.fit_transform(MTest3)
 
-klasifikasi3 = MultinomialNB().fit(TFIDFTest3, labelTest)
+klasifikasi3 = SVC().fit(TFIDFTest3, labelTest)
 prediksi3 = klasifikasi3.predict(TFIDFTest3)
+# print(prediksi3)
 akurasi3 = 0
 for i in range(len(labelTest)):
 	if labelTest[i] == str(prediksi3[i]):
@@ -111,4 +114,41 @@ e=len(labelTest)
 f=akurasi3
 g=((float(f*100)/e)+1)
 
-print("Akurasi : {} %".format(int(round(g))) )
+print("Akurasi SVM Data Test: {} %".format(int(round(g))) )
+
+# ==================================================
+# Gaussian
+
+# # Akurasi Data Test
+# MTrain4 = count_vect.fit_transform(datasetTrain)
+# TFIDFTrain4 = Pembobotan.fit_transform(MTrain4)
+
+# klasifikasi4 = GaussianNB().fit(TFIDFTrain4, labelTrain)
+# prediksi4 = klasifikasi4.predict(TFIDFTrain4)
+# akurasi4 = 0
+# for i in range(len(labelTrain)):
+# 	if labelTrain[i] == str(prediksi4[i]):
+# 		akurasi4 += 1
+
+# j=len(labelTrain)
+# k=akurasi4
+# l=((float(k*100)/j)+1)
+# print("Akurasi : {} %".format(int(round(l))) )
+
+# # Akurasi Data Test
+
+# MTest5 = count_vect.fit_transform(datasetTest)
+# TFIDFTest5 = Pembobotan.fit_transform(MTest5)
+
+# klasifikasi5 = GaussianNB().fit(TFIDFTest5, labelTest)
+# prediksi5 = klasifikasi5.predict(TFIDFTest5)
+# akurasi5 = 0
+# for i in range(len(labelTest)):
+# 	if labelTest[i] == str(prediksi5[i]):
+# 		akurasi5 += 1
+
+# p=len(labelTest)
+# q=akurasi5
+# r=((float(q*100)/p)+1)
+
+# print("Akurasi : {} %".format(int(round(r))) )
