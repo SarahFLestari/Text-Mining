@@ -3,7 +3,7 @@ from string import punctuation
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.tokenize.moses import MosesDetokenizer
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 import os
 import csv
 import pprint
@@ -25,6 +25,7 @@ labelTrain = np.matrix(labelTrain)
 datasetTrain = []
 label = []
 output = []
+fileName = './PrePrecessingTraining.csv'
 
 for i in range(len(labelTrain)):
 	soup = bs(open("Training/"+ str(labelTrain[i,0])+".xml",'r').read(),'html.parser')
@@ -32,16 +33,18 @@ for i in range(len(labelTrain)):
 	headline = soup.find("headline").get_text().replace('\n','')
 	paragraph = soup.find("text").get_text().replace('\n','')
 	label = int((labelTrain[i,1]) == "YES")
-	datasetTrain.append([[str(headline)],[str(paragraph)],[label]])
+	datasetTrain.append([[str(headline)],[str(paragraph)],label])
 # ==================================================
 # Case Folding
 tmp0 = []
 tmp1 = []
 for i in range(len(datasetTrain)):
-	# print(datasetTrain[i][0][0])
+	# print(datasetTrain[i][0])
+	# print(datasetTrain[i][1])
 	tmp0.append(datasetTrain[i][0])
 	tmp1.append(datasetTrain[i][1])
 # print(tmp0)
+# print(tmp1)
 for i in range(len(tmp0)):
 	valsLower = [item.lower() for item in tmp0[i]]
 	tmp0[i] = valsLower
@@ -55,21 +58,13 @@ for i in range(len(tmp1)):
 #Remove Punctuation
 for p in list(punctuation):
 	for i in range(len(tmp0)):
-		valsPunc = [item.replace(p, '') for item in tmp0[i]]
-		tmp0[i] = valsPunc
+		valsPunc0 = [item.replace(p, '') for item in tmp0[i]]
+		tmp0[i] = valsPunc0
 	for i in range(len(tmp1)):
 		valsPunc1 = [item.replace(p, '') for item in tmp1[i]]
-		tmp0[i] = valsPunc1
-# print(tmp1)
-# print(tmp0)
-# ==================================================
-# #Remove Stop Word
-filteredSentences = []
-filteredSentences = [w for w in tmp0 if not w in stop_words]
-for w in tmp0:
-	if not w in stop_words:
-		filteredSentences.append(w)
-print(filteredSentences)
+		tmp1[i] = valsPunc1
+# print("INI PUNC 1",tmp0)
+# print("INI PUNC 2",tmp1)
 # ==================================================
 # Tokenize
 for i in range(len(tmp0)):
@@ -79,20 +74,79 @@ for i in range(len(tmp0)):
 for i in range(len(tmp1)):
 	valsToken1 = [word_tokenize(item) for item in tmp1[i]]
 	tmp1[i] = valsToken1
-# print("token",tmp1)
-# print("token",tmp0)
+# print("TOKEN 33",tmp0)
+# print("TOKEN 1",tmp1)
+# ==================================================
+# Stop Word Removal
+FilteredSentences0 = []
+FilteredSentences1 = []
+for j in range(len(tmp0)):
+	# print(j)
+	for item in tmp0[j]:
+		# print(item)
+		item = " ".join(item)
+		FilteredSentences0.append([item])
+temp0 = []
+for i in range(len(FilteredSentences0)):
+	for item in FilteredSentences0[i]:
+		temp0.append(item)
 
-# #stemmer
-# stemSentences = []
-# for i in filteredSentences:
-# 	j = lemmatizer.lemmatize(i)
-# 	stemSentences.append(j)
+for j in range(len(tmp1)):
+	# print(j)
+	for item in tmp1[j]:
+		# print(item)
+		item = " ".join(item)
+		FilteredSentences1.append([item])
+temp1 = []
+for i in range(len(FilteredSentences1)):
+	for item in FilteredSentences1[i]:
+		temp1.append(item)
+stopWordRemov0 = []
+stopWordRemov0 = [w for w in temp0 if not w in stop_words]
+stopWordRemov1 = []
+stopWordRemov1 = [w for w in temp1 if not w in stop_words]
+# print("stopwords",stopWordRemov0)
+# print("stopwords",stopWordRemov1)
+# ==================================================
+# Stemming
+stemmer = PorterStemmer()
+hasilStem0 = []
+hasilStem1 = []
+for word in stopWordRemov0:
+	# print(stemmer.stem(word))
+	hasilStem0.append(stemmer.stem(word))
+for word in stopWordRemov1:
+	# print(stemmer.stem(word))
+	hasilStem1.append(stemmer.stem(word))
+# print(hasilStem0)
+# print("hasil stem",hasilStem1)
+# ==================================================
+# #Detokenizer
+# result0 = []
+# result1 =[]
+# for k in range(len(hasilStem0)):
+#     result0.append(detokenizer.detokenize(hasilStem0[k], return_str=True))
+# for k in range(len(hasilStem1)):
+#     result1.append(detokenizer.detokenize(hasilStem1[k], return_str=True))
 
-# PraprosesTrain = detokenizer.detokenize(stemSentences, return_str=True)
-# datasetTrain = PraprosesTrain
+# print(result0)
+# for l in range(len(result0)):
+# 	result0[l] = result0[l].replace(" ","")
+# 	print(result0[l])
+# for l in range(len(result1)):
+# 	result1[l] = result1[l].replace(" ","")
+# 	print(result1[l])
+# ==================================================
+# Memberi Label
+for i in range(len(datasetTrain[2])):
+	output.append([hasilStem0[i],hasilStem1[i],datasetTrain[i][2]])
+# print(output)
 
-# for i in range(len(labelTrain)):
-# 	label = int((labelTrain[i,1]) == "YES")
-# 	datasetTrain.append(" ".join(label))
+with open(fileName, "w") as csv_file:
+	writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
+	for i in range(len(output)):
+		writer.writerow(output[i])
+
+print('finish')
 
 
