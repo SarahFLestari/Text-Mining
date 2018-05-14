@@ -49,6 +49,7 @@ TFIDFTrain = Pembobotan.fit_transform(MTrain)
 
 klasifikasi = MultinomialNB().fit(TFIDFTrain, labelTrain)
 prediksi = klasifikasi.predict(TFIDFTrain)
+#print(prediksi)
 akurasi = 0
 for i in range(len(labelTrain)):
 	if labelTrain[i] == str(prediksi[i]):
@@ -86,7 +87,7 @@ TFIDFTrain2 = Pembobotan.fit_transform(MTrain2)
 
 klasifikasi2 = SVC().fit(TFIDFTrain2, labelTrain)
 prediksi2 = klasifikasi2.predict(TFIDFTrain2)
-# print(prediksi2)
+print(prediksi2)
 akurasi2 = 0
 for i in range(len(labelTrain)):
 	if labelTrain[i] == str(prediksi2[i]):

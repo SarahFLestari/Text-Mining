@@ -137,26 +137,3 @@ with open(fileName, "w") as resultFile:
 	for line in output:
 		wr.writerow(line)
 print('finish')
-
-
-
-
-
-
-
-# #Detokenizer
-# result0 = []
-# result1 =[]
-# for k in range(len(hasilStem0)):
-#     result0.append(detokenizer.detokenize(hasilStem0[k], return_str=True))
-# for k in range(len(hasilStem1)):
-#     result1.append(detokenizer.detokenize(hasilStem1[k], return_str=True))
-
-# print(result0)
-# for l in range(len(result0)):
-# 	result0[l] = result0[l].replace(" ","")
-# 	print(result0[l])
-# for l in range(len(result1)):
-# 	result1[l] = result1[l].replace(" ","")
-# 	print(result1[l])
-# ==================================================
